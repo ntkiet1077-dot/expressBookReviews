@@ -39,7 +39,7 @@ regd_users.post("/login", (req, res) => {
             accessToken,
             username
         };
-        return res.status(200).send("Customer successfully logged in");
+        return res.status(200).json({ message: "Login successful!" });
     } else {
         return res.status(208).json({ message: "Invalid Login. Check username and password" });
     }
@@ -55,7 +55,10 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
         if (review) {
             filtered_book['reviews'][reviewer] = review;
             books[isbn] = filtered_book;
-            return res.status(200).send(`The review for the book with ISBN ${isbn} has been added/updated.`);
+            return res.status(200).json({
+                message: "Review added/updated successfully",
+                reviews: books[isbn].reviews
+            });
         } else {
             return res.status(400).json({ message: "Review content is required." });
         }
@@ -72,7 +75,7 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
     if (filtered_book) {
         if (filtered_book.reviews && filtered_book.reviews[reviewer]) {
             delete filtered_book.reviews[reviewer];
-            return res.status(200).send(`Reviews for the ISBN ${isbn} posted by the user ${reviewer} deleted.`);
+            return res.status(200).json({ message: `Review for ISBN ${isbn} deleted` });
         } else {
             return res.status(404).json({ message: `No review found by user ${reviewer} for book with ISBN ${isbn}.` });
         }
